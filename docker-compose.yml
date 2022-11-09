@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:bullseye
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypass
+    ports:
+      - "5432:5432"
+    volumes:
+      - psql-db:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: engjat94@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: River1993!
+    ports:
+      - "8080:80"
+
+volumes:
+  psql-db:
