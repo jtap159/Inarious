@@ -2,10 +2,10 @@ from fastapi import FastAPI, Depends, HTTPException
 import uvicorn
 from sqlalchemy.orm import Session
 
-from models import User as modelUser, Base
+from models import User as modelUser
 from schemas import User as schemaUser
 
-from database import SessionLocal, engine
+from database import SessionLocal, engine, Base
 
 Base.metadata.create_all(bind=engine)
 
@@ -34,5 +34,5 @@ def post_user(user: schemaUser, db: Session = Depends(get_db)):
 
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run('main:app', host="127.0.0.1", port=8000, reload=True)
 
