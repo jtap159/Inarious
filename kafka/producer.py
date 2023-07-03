@@ -1,22 +1,30 @@
-from kafka.producer import KafkaProducer
-from kafka.admin import KafkaAdminClient
+from confluent_kafka import Producer
+import socket
+
+
+def acked(err, msg):
+    if err is not None:
+        print("Failed to deliver message: %s: %s" % (str(msg), str(err)))
+    else:
+        print("Message produced: %s" % (str(msg)))
 
 
 def run_producer():
     print("connecting.....")
-    producer = KafkaProducer(bootstrap_servers="localhost:9092", client_id="myapp")
+    topic = "Users"
+    conf = {
+        "bootstrap.servers": "localhost:19092",
+        "client.id": socket.gethostname(),
+    }
+    producer = Producer(conf)
     print("producer is connected")
-    print("sending a log to Users Topic")
-    result = producer.send("Users", b"jeremy tapia", partition=0)
-    print(f"sent {result}")
-    producer.close()
+    print("sending Users Topic")
+    producer.produce(topic, key="name", value=b"Jeremy Tapia", callback=acked)
 
-
-def check_topic_lists():
-    admin_client = KafkaAdminClient(
-        bootstrap_servers="localhost:9092", client_id="myapp"
-    )
-    print(admin_client.list_topics())
+    # wait up to 1 second for events. callbacks will be invoked during
+    # this method call if the message is acknowledged
+    producer.poll(1)
+    producer.flush()
 
 
 if __name__ == "__main__":
