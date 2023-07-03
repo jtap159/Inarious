@@ -3,6 +3,7 @@ services:
     image: postgres:bullseye
     restart: always
     environment:
+      POSTGRES_DB: fastapi 
       POSTGRES_PASSWORD: mypass
     ports:
       - "5432:5432"

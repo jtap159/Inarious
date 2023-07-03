@@ -9,6 +9,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = {extras = ["all"], version = "^0.99.0"}
+sqlalchemy = "^2.0.17"
+psycopg2-binary = "^2.9.6"
+kafka-python = "^2.0.2"
 
 
 [build-system]
