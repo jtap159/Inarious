@@ -1,24 +1,15 @@
 version: '3.9'
 
 services:
-  db:
-    image: postgres:bullseye
-    restart: always
+  arangodb:
+    image: arangodb:latest
     environment:
-      POSTGRES_DB: fastapi 
-      POSTGRES_PASSWORD: mypass
+      ARANGO_ROOT_PASSWORD: mypass
     ports:
-      - "5432:5432"
+      - "8529:8529"
     volumes:
-      - psql-db:/var/lib/postgresql/data
-
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    environment:
-      PGADMIN_DEFAULT_EMAIL: engjat94@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: River1993!
-    ports:
-      - "8080:80"
+      - arangodb_data_container:/var/lib/arangodb3
+      - arangodb_apps_data_container:/var/lib/arangodb3-apps
 
   zookeeper:
     image: zookeeper
@@ -27,6 +18,11 @@ services:
     volumes:
       - zk-data:/var/lib/zookeeper/data
       - zk-txn-logs:/var/lib/zookeeper/log
+    healthcheck:
+      test: nc -z localhost 2181 || exit
+      interval: 10s 
+      timeout: 5s 
+      retries: 15
 
   broker:
     image: confluentinc/cp-kafka
@@ -44,13 +40,14 @@ services:
       KAFKA_CREATE_TOPICS: "Users:1:1"
       KAFKA_RESTART_ATTEMPTS: "10"
       KAFKA_RESTART_DELAY: "5"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
     healthcheck:
       test: nc -z localhost 9092 || exit
       interval: 10s 
       timeout: 5s 
       retries: 15
-    volumes:
-      - kafka-data:/var/lib/kafka/data
+
 
 
   uikafka:
@@ -64,7 +61,8 @@ services:
       - kafka-ui-config:/config.yml
 
 volumes:
-  psql-db:
+  arangodb_data_container:
+  arangodb_apps_data_container:
   zk-data:
   zk-txn-logs:
   kafka-data:
