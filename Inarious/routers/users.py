@@ -1,14 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pyArango.theExceptions import UniqueConstrainViolation
 from Inarious.database.arangodb.database import conn
 from Inarious.schemas.arangodb.schemas import User as schema_User
-
+from Inarious.kafka.producer import send_event
 
 router = APIRouter()
 
 
 @router.get("/")
-def get_users():
+async def get_users(request: Request):
+    send_event("Users", request.base_url.hostname, request.method)
     db = conn["inarious"]
     users_collection = db["Users"]
     users = []
@@ -18,7 +19,8 @@ def get_users():
 
 
 @router.post("/")
-def post_user(user: schema_User):
+async def post_user(user: schema_User, request: Request):
+    send_event("Users", request.base_url.hostname, request.method)
     db = conn["inarious"]
     users_collection = db["Users"]
     try:
