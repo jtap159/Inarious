@@ -24,6 +24,9 @@ services:
     image: zookeeper
     ports:
       - "2181:2181"
+    volumes:
+      - zk-data:/var/lib/zookeeper/data
+      - zk-txn-logs:/var/lib/zookeeper/log
 
   broker:
     image: confluentinc/cp-kafka
@@ -35,6 +38,9 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://localhost:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
 
   uikafka:
     container_name: uikafka
@@ -44,7 +50,11 @@ services:
     ports:
       - "8081:8080"
     volumes:
-      - ~/kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+      - kafka-ui-config:/config.yml
 
 volumes:
   psql-db:
+  zk-data:
+  zk-txn-logs:
+  kafka-data:
+  kafka-ui-config:
