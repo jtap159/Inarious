@@ -1,13 +1,16 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from pyArango.connection import Connection
 
-psql_db = "fastapi"
-psql_url = f"postgresql://postgres:mypass@127.0.0.1:5432/{psql_db}"
+conn = Connection(username="root", password="mypass")
 
-engine = create_engine(psql_url)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# create the database and collection if they do not exist
+def initialize_db_collection():
+    global conn
+    if not conn.hasDatabase(name="inarious"):
+        db = conn.createDatabase(name="inarious")
+    else:
+        db = conn["inarious"]
 
-Base = declarative_base()
+    if not db.hasCollection("Users"):
+        db.createCollection(name="Users")
 
