@@ -1,14 +1,13 @@
-from fastapi import FastAPI, HTTPException
-import uvicorn
-from Inarious.schemas import User as schemaUser
-from Inarious.database import conn, initialize_db_collection
+from fastapi import APIRouter, HTTPException
 from pyArango.theExceptions import UniqueConstrainViolation
+from Inarious.database.arangodb.database import conn
+from Inarious.schemas.arangodb.schemas import User as schema_User
 
-initialize_db_collection()
-app = FastAPI()
+
+router = APIRouter()
 
 
-@app.get("/users/")
+@router.get("/")
 def get_users():
     db = conn["inarious"]
     users_collection = db["Users"]
@@ -18,8 +17,8 @@ def get_users():
     return users
 
 
-@app.post("/users/")
-def post_user(user: schemaUser):
+@router.post("/")
+def post_user(user: schema_User):
     db = conn["inarious"]
     users_collection = db["Users"]
     try:
@@ -33,7 +32,3 @@ def post_user(user: schemaUser):
     except UniqueConstrainViolation as err:
         return HTTPException(status_code=400, detail="Item already exists.")
     return user.dict()
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

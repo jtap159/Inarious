@@ -48,8 +48,6 @@ services:
       timeout: 5s 
       retries: 15
 
-
-
   uikafka:
     container_name: uikafka
     image: provectuslabs/kafka-ui
