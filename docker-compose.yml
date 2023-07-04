@@ -37,11 +37,14 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   uikafka:
+    container_name: uikafka
     image: provectuslabs/kafka-ui
     environment:
       DYNAMIC_CONFIG_ENABLED: true 
     ports:
       - "8081:8080"
+    volumes:
+      - ~/kui/config.yml:/etc/kafkaui/dynamic_config.yaml
 
 volumes:
   psql-db:

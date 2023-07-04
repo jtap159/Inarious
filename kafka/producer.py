@@ -1,4 +1,5 @@
 from confluent_kafka import Producer
+from random import choice
 import socket
 
 
@@ -6,7 +7,7 @@ def acked(err, msg):
     if err is not None:
         print("Failed to deliver message: %s: %s" % (str(msg), str(err)))
     else:
-        print("Message produced: %s" % (str(msg)))
+        print("Message produced: %s" % (str(msg.value())))
 
 
 def run_producer():
@@ -18,8 +19,12 @@ def run_producer():
     }
     producer = Producer(conf)
     print("producer is connected")
-    print("sending Users Topic")
-    producer.produce(topic, key="name", value=b"Jeremy Tapia", callback=acked)
+    users = ["jeremy", "blake", "ryan", "kelly", "barbra", "amanda"]
+    events = ["clicked", "emailed", "swiped", "downloaded"]
+    for _ in range(10):
+        user = choice(users)
+        event = choice(events)
+        producer.produce(topic, key=user, value=event, callback=acked)
 
     # wait up to 1 second for events. callbacks will be invoked during
     # this method call if the message is acknowledged
