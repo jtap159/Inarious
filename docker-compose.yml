@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 
 services:
   db:
@@ -31,6 +31,9 @@ services:
   broker:
     image: confluentinc/cp-kafka
     container_name: broker
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     ports:
       - "19092:19092"
     environment:
@@ -38,6 +41,14 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://localhost:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "Users:1:1"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+    healthcheck:
+      test: nc -z localhost 9092 || exit
+      interval: 10s 
+      timeout: 5s 
+      retries: 15
     volumes:
       - kafka-data:/var/lib/kafka/data
 
