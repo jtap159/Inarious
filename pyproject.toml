@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "inarious"
+version = "0.1.0"
+description = "A back-end Kafka system."
+authors = ["jeremy <engjat94@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = {extras = ["all"], version = "^0.99.0"}
+confluent-kafka = "^2.1.1"
+python-dotenv = "^1.0.0"
+pyArango = "^2.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
