@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pyArango.theExceptions import UniqueConstrainViolation
 from Inarious.database.arangodb.database import conn
 from Inarious.schemas.arangodb.schemas import User as schema_User
-from Inarious.kafka.producer import send_event
+from Inarious.inarious_kafka.producer import send_event
 
 router = APIRouter()
 
