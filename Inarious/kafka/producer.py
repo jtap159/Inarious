@@ -1,5 +1,6 @@
 from confluent_kafka import Producer
 import socket
+from Inarious.config import settings
 
 
 def acked(err, msg):
@@ -10,8 +11,9 @@ def acked(err, msg):
 
 
 def send_event(topic: str, key: str, value: str):
+    server_url = f"{settings.KAFKA_HOSTNAME}:{settings.KAFKA_PORT}"
     conf = {
-        "bootstrap.servers": "localhost:19092",
+        "bootstrap.servers": server_url,
         "client.id": socket.gethostname(),
     }
     producer = Producer(conf)
