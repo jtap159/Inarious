@@ -12,4 +12,4 @@ RUN poetry install
 
 COPY ./Inarious /app/Inarious
 
-CMD ["faust", "-A", "Inarious.faust_main", "worker", "-l", "info"]
+CMD ["poetry", "run", "faust", "-A", "Inarious.faust_main", "worker", "-l", "info"]
