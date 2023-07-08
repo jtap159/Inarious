@@ -1,4 +1,5 @@
 import faust
+from Inarious.config import settings
 
 
 class UserMethod(faust.Record):
@@ -9,7 +10,7 @@ class UserMethod(faust.Record):
 
 
 app = faust.App(
-    "inarious-app", broker="kafka://localhost:19092"
+    "inarious-app", broker=f"kafka://{settings.KAFKA_URL}"
 )
 users_kafka_topic = app.topic("Users", key_type=str, value_type=UserMethod)
 

@@ -48,6 +48,24 @@ services:
       timeout: 5s 
       retries: 15
 
+  init-kafka:
+    image: confluentinc/cp-kafka:6.1.1
+    depends_on:
+      broker:
+        condition: service_healthy
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server broker:9092 --list
+
+      echo -e 'Creating kafka topic'
+      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --topic Users --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server broker:9092 --list
+      "
+
   uikafka:
     container_name: uikafka
     image: provectuslabs/inarious_kafka-ui
@@ -62,7 +80,7 @@ services:
     container_name: inarious
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: fastapi.Dockerfile
     env_file:
       - .env
     ports:
@@ -76,5 +94,5 @@ volumes:
   arangodb_apps_data_container:
   zk-data:
   zk-txn-logs:
-  kafka-data:
-  kafka-ui-config:
+  inarious_kafka-ui-config:
+  inarious_kafka-data:
