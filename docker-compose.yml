@@ -3,8 +3,8 @@ version: '3.9'
 services:
   arangodb:
     image: arangodb:latest
-    environment:
-      ARANGO_ROOT_PASSWORD: mypass
+    env_file:
+      - .env
     ports:
       - "8529:8529"
     volumes:
@@ -41,12 +41,30 @@ services:
       KAFKA_RESTART_ATTEMPTS: "10"
       KAFKA_RESTART_DELAY: "5"
     volumes:
-      - kafka-data:/var/lib/kafka/data
+      - inarious_kafka-data:/var/lib/inarious_kafka/data
     healthcheck:
       test: nc -z localhost 9092 || exit
       interval: 10s 
       timeout: 5s 
       retries: 15
+
+  init-kafka:
+    image: confluentinc/cp-kafka
+    depends_on:
+      broker:
+        condition: service_healthy
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server broker:9092 --list
+
+      echo -e 'Creating kafka topic'
+      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --topic Users --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server broker:9092 --list
+      "
 
   uikafka:
     container_name: uikafka
@@ -56,12 +74,36 @@ services:
     ports:
       - "8081:8080"
     volumes:
-      - kafka-ui-config:/config.yml
+      - inarious_kafka-ui-config:/config.yml
+
+  inarious:
+    container_name: inarious
+    build:
+      context: ./
+      dockerfile: fastapi.Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8082:8000"
+    depends_on:
+      broker:
+        condition: service_healthy
+
+  faust_service0:
+    container_name: faust_service0
+    build:
+      context: ./
+      dockerfile: faust.Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      broker:
+        condition: service_healthy
 
 volumes:
   arangodb_data_container:
   arangodb_apps_data_container:
   zk-data:
   zk-txn-logs:
-  kafka-data:
-  kafka-ui-config:
+  inarious_kafka-ui-config:
+  inarious_kafka-data:

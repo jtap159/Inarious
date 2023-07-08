@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 import uvicorn
 from Inarious.database.arangodb.database import initialize_db_collection
 from Inarious.routers import users
