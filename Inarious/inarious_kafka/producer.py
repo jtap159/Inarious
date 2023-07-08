@@ -1,6 +1,7 @@
 from confluent_kafka import Producer
-import socket
 from Inarious.config import settings
+from typing import Any, Dict
+import json
 
 
 def acked(err, msg):
@@ -10,13 +11,17 @@ def acked(err, msg):
         print("Message produced: %s" % (str(msg.value())))
 
 
-def send_event(topic: str, key: str, value: str):
-    server_url = f"{settings.KAFKA_HOSTNAME}:{settings.KAFKA_PORT}"
-    conf = {
-        "bootstrap.servers": server_url,
-        "client.id": socket.gethostname(),
-    }
-    producer = Producer(conf)
+def send_raw_event(topic: str, key: str, value: str):
+    """
+    Send a raw event message value to the Kafka topic.
+
+    Args:
+        topics (str): The Kafka Topic name.
+        key (str): The Kafka Topic message key.
+        value (str): The Kafka topic message value as a raw byte str.
+            Example (b'some message').
+    """
+    producer = Producer(settings.KAFKA_PRODUCER_CONF)
     producer.produce(topic, key=key, value=value, callback=acked)
 
     # wait up to 1 second for events. callbacks will be invoked during
@@ -24,3 +29,21 @@ def send_event(topic: str, key: str, value: str):
     producer.poll(1)
     # producer.flush()
 
+
+def send_json_event(topic: str, key: str, value: Dict[str, Any]):
+    """
+    Send a json event message value to the Kafka topic.
+
+    Args:
+        topics (str): The Kafka Topic name.
+        key (str): The Kafka Topic message key.
+        value (str): The Kafka topic message value as a dictionary
+            that will be converted to json.
+    """
+    producer = Producer(settings.KAFKA_PRODUCER_CONF)
+    producer.produce(topic, key=key, value=json.dumps(value), callback=acked)
+
+    # wait up to 1 second for events. callbacks will be invoked during
+    # this method call if the message is acknowledged
+    producer.poll(1)
+    # producer.flush()
