@@ -3,12 +3,7 @@ from Inarious.config import settings
 from Inarious.protobuf.backendApiActivity_pb2 import BackendApiActivity
 from faust.serializers import codecs
 from typing import Any
-from google.protobuf import json_format
 from google.protobuf.json_format import MessageToJson
-from google.protobuf.json_format import MessageToDict
-from google.protobuf import text_format
-from google.protobuf.text_format import MessageToString
-from google.protobuf.text_format import MessageToBytes
 
 
 # see https://stackoverflow.com/questions/64686686/using-python-compiled-protobuf-pb2-as-key-and-value-serializer
@@ -39,7 +34,7 @@ users_kafka_topic = app.topic("Users", schema=activity_schema)
 
 
 @app.agent(users_kafka_topic)
-async def process(user_activities):
+async def consumer(user_activities):
     async for user_activity in user_activities:
         print(f"{MessageToJson(user_activity)}")
 
