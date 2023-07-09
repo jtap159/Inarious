@@ -20,3 +20,4 @@ protoc -I=. --python_out=. ./example.proto
 
 # Resources
 * [protoc Linux Installation](http://google.github.io/proto-lens/installing-protoc.html)
+* [Faust Protobuf Serialization Troubleshooting](https://stackoverflow.com/questions/64686686/using-python-compiled-protobuf-pb2-as-key-and-value-serializer)
