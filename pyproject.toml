@@ -14,6 +14,7 @@ python-dotenv = "^1.0.0"
 pyArango = "^2.0.2"
 faust = "^1.10.4"
 bson = "^0.5.10"
+protobuf = "^4.23.4"
 
 
 [build-system]
