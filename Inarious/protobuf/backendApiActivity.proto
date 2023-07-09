@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+// Not necessary for Python but should still be declared to avoid name collisions
+// in the Protocol Buffers namespace and non-Python languages
+package protoblog;
+
+message BackendApiActivity {
+    string client_host = 1;
+    string client_port = 2;
+    string endpoint = 3;
+    string http_method = 4;
+}

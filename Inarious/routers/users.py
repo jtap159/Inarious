@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, Request
 from pyArango.theExceptions import UniqueConstrainViolation
 from Inarious.database.arangodb.database import conn
 from Inarious.schemas.arangodb.schemas import User as schema_User
-from Inarious.inarious_kafka.producer import send_json_event
+from Inarious.inarious_kafka.producer import send_raw_event
+from Inarious.protobuf.backendApiActivity_pb2 import BackendApiActivity
 
 router = APIRouter()
 
@@ -11,11 +12,12 @@ router = APIRouter()
 async def get_users(request: Request):
     event = {
         "client_host": request.client.host,
-        "client_port": request.client.port,
+        "client_port": str(request.client.port),
         "endpoint": str(request.url),
         "http_method": request.method
     }
-    send_json_event("Users", request.base_url.hostname, event)
+    activity_event = BackendApiActivity(**event)
+    send_raw_event("Users", request.base_url.hostname, activity_event.SerializeToString())
     db = conn["inarious"]
     users_collection = db["Users"]
     users = []
@@ -28,11 +30,12 @@ async def get_users(request: Request):
 async def post_user(user: schema_User, request: Request):
     event = {
         "client_host": request.client.host,
-        "client_port": request.client.port,
+        "client_port": str(request.client.port),
         "endpoint": str(request.url),
         "http_method": request.method
     }
-    send_json_event("Users", request.base_url.hostname, event)
+    activity_event = BackendApiActivity(**event)
+    send_raw_event("Users", request.base_url.hostname, activity_event.SerializeToString())
     db = conn["inarious"]
     users_collection = db["Users"]
     try:
