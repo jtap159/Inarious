@@ -30,7 +30,7 @@ async def get_users(request: Request):
 async def post_user(user: schema_User, request: Request):
     event = {
         "client_host": request.client.host,
-        "client_port": request.client.port,
+        "client_port": str(request.client.port),
         "endpoint": str(request.url),
         "http_method": request.method
     }
