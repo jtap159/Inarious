@@ -11,6 +11,7 @@ from google.protobuf.text_format import MessageToString
 from google.protobuf.text_format import MessageToBytes
 
 
+# see https://stackoverflow.com/questions/64686686/using-python-compiled-protobuf-pb2-as-key-and-value-serializer
 class ProtobufSerializer(codecs.Codec):
     def __init__(self, pb_type: Any):
         self.pb_type = pb_type
