@@ -6,7 +6,7 @@ A basic use case for how to leverage [Kafka](https://developer.confluent.io/quic
 This Project uses docker and docker compose to create a development environment.
 Run the docker compose file with:
 ```commandline
-docker compose -f ./docker/docker-compose.yml up -d
+docker compose up -d
 ```
 The idea for this project was to keep the use case simple and focus on how these technologies can work together 
 to create a real-time data streaming application.
