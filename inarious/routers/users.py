@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Request
 from pyArango.theExceptions import UniqueConstrainViolation
-from Inarious.database.arangodb.database import conn
-from Inarious.schemas.arangodb.schemas import User as schema_User
-from Inarious.inarious_kafka.producer import send_raw_event
-from Inarious.protobuf.backendApiActivity_pb2 import BackendApiActivity
+
+from inarious.database.arangodb.database import conn
+from inarious.schemas.arangodb.schemas import User as schema_User
+from inarious.kafka.producer import send_raw_event, send_json_event
+# from inarious.protobuf.backendApiActivity_pb2 import BackendApiActivity
 
 router = APIRouter()
 
@@ -16,8 +17,12 @@ async def get_users(request: Request):
         "endpoint": str(request.url),
         "http_method": request.method
     }
-    activity_event = BackendApiActivity(**event)
-    send_raw_event("Users", request.base_url.hostname, activity_event.SerializeToString())
+    # activity_event = BackendApiActivity(**event)
+    send_json_event(
+        "Users",
+        request.base_url.hostname,
+        event
+    )
     db = conn["inarious"]
     users_collection = db["Users"]
     users = []
@@ -34,8 +39,12 @@ async def post_user(user: schema_User, request: Request):
         "endpoint": str(request.url),
         "http_method": request.method
     }
-    activity_event = BackendApiActivity(**event)
-    send_raw_event("Users", request.base_url.hostname, activity_event.SerializeToString())
+    # activity_event = BackendApiActivity(**event)
+    send_json_event(
+        "Users",
+        request.base_url.hostname,
+        event,
+    )
     db = conn["inarious"]
     users_collection = db["Users"]
     try:
@@ -47,5 +56,8 @@ async def post_user(user: schema_User, request: Request):
         doc._key = user.first_name + user.last_name
         doc.save()
     except UniqueConstrainViolation as err:
-        return HTTPException(status_code=400, detail="Item already exists.")
+        return HTTPException(
+            status_code=400,
+            detail="Item already exists.",
+        )
     return user.dict()

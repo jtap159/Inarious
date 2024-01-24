@@ -1,10 +1,12 @@
 from pyArango.connection import Connection
-from Inarious.config import settings
+from inarious.config import settings
 
 
-conn = Connection(arangoURL=settings.ARANGO_URL,
-                  username=settings.ARANGO_USERNAME,
-                  password=settings.ARANGO_ROOT_PASSWORD)
+conn = Connection(
+    arangoURL=settings.ARANGO_URL,
+    username=settings.ARANGO_USERNAME,
+    password=settings.ARANGO_ROOT_PASSWORD,
+)
 
 
 # create the database and collection if they do not exist

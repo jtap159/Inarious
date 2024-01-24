@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
-from Inarious.database.arangodb.database import initialize_db_collection
-from Inarious.routers import users
+
+from inarious.database.arangodb.database import initialize_db_collection
+from inarious.routers import users
 
 initialize_db_collection()
 

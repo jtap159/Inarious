@@ -99,6 +99,8 @@ services:
     depends_on:
       broker:
         condition: service_healthy
+    volumes:
+      - ./inarious:/app/inarious
 
 volumes:
   arangodb_data_container:

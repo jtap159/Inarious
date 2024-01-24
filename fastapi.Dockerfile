@@ -10,6 +10,6 @@ COPY ./pyproject.toml ./poetry.lock* ./
 RUN pip install --no-cache-dir poetry
 RUN poetry install
 
-COPY ./Inarious /app/Inarious
+COPY ./inarious /app/inarious
 
-CMD ["poetry", "run", "uvicorn", "Inarious.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["poetry", "run", "uvicorn", "inarious.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

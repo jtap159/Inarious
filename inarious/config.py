@@ -16,11 +16,10 @@ class Settings(BaseSettings):
 
     @property
     def KAFKA_PRODUCER_CONF(self):
-        conf = {
+        return {
             "bootstrap.servers": self.KAFKA_URL,
             "client.id": socket.gethostname(),
         }
-        return conf
 
 
 settings = Settings()

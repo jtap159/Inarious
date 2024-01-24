@@ -1,5 +1,5 @@
 from confluent_kafka import Producer
-from Inarious.config import settings
+from inarious.config import settings
 from typing import Any, Dict
 import json
 
@@ -22,12 +22,14 @@ def send_raw_event(topic: str, key: str, value: str):
             Example (b'some message').
     """
     producer = Producer(settings.KAFKA_PRODUCER_CONF)
-    producer.produce(topic, key=key, value=value, callback=acked)
+    producer.produce(
+        topic, key=key, value=value, callback=acked,
+    )
 
     # wait up to 1 second for events. callbacks will be invoked during
     # this method call if the message is acknowledged
     producer.poll(1)
-    # producer.flush()
+    producer.flush()
 
 
 def send_json_event(topic: str, key: str, value: Dict[str, Any]):
@@ -41,9 +43,11 @@ def send_json_event(topic: str, key: str, value: Dict[str, Any]):
             that will be converted to json.
     """
     producer = Producer(settings.KAFKA_PRODUCER_CONF)
-    producer.produce(topic, key=key, value=json.dumps(value), callback=acked)
+    producer.produce(
+        topic, key=key, value=json.dumps(value), callback=acked,
+    )
 
     # wait up to 1 second for events. callbacks will be invoked during
     # this method call if the message is acknowledged
     producer.poll(1)
-    # producer.flush()
+    producer.flush()
