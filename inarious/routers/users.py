@@ -23,6 +23,11 @@ async def get_users(request: Request):
         request.base_url.hostname,
         event
     )
+    send_json_event(
+        "Clients",
+        request.base_url.hostname,
+        event
+    )
     db = conn["inarious"]
     users_collection = db["Users"]
     users = []
@@ -44,6 +49,11 @@ async def post_user(user: schema_User, request: Request):
         "Users",
         request.base_url.hostname,
         event,
+    )
+    send_json_event(
+        "Clients",
+        request.base_url.hostname,
+        event
     )
     db = conn["inarious"]
     users_collection = db["Users"]
