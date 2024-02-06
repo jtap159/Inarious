@@ -61,6 +61,8 @@ services:
 
       echo -e 'Creating kafka topic'
       kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --topic Users --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --topic Clients --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --topic PgToMongoPipeline --replication-factor 1 --partitions 1
 
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server broker:9092 --list
@@ -91,11 +93,11 @@ services:
     volumes:
       - ./inarious:/app/inarious
 
-  faust_service0:
-    container_name: faust_service0
+  kafka_service_user:
+    container_name: kafka_service_user
     build:
       context: ./
-      dockerfile: faust.Dockerfile
+      dockerfile: kafka.Dockerfile
     env_file:
       - .env
     depends_on:
@@ -103,6 +105,7 @@ services:
         condition: service_healthy
     volumes:
       - ./inarious:/app/inarious
+    command: bash -c "poetry run python -u inarious/user_consumer.py"
 
 volumes:
   arangodb_data_container:

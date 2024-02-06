@@ -3,6 +3,7 @@ import uvicorn
 
 from inarious.database.arangodb.database import initialize_db_collection
 from inarious.routers import users
+from inarious.routers import pg_to_mdb_pipeline
 
 initialize_db_collection()
 
@@ -12,6 +13,11 @@ app.include_router(
     users.router,
     prefix="/users",
     tags=['users']
+)
+app.include_router(
+    pg_to_mdb_pipeline.router,
+    prefix="/pg_to_mdb_pipeline",
+    tags=["pg_to_mdb_pipeline"]
 )
 
 

@@ -6,3 +6,7 @@ class User(BaseModel):
     last_name: str
     middle_name: str
     gender: str
+
+
+class PgToMongoPipelineRequest(BaseModel):
+    pg_to_mdb_pipeline: bool

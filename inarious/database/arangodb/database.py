@@ -19,4 +19,6 @@ def initialize_db_collection():
 
     if not db.hasCollection("Users"):
         db.createCollection(name="Users")
+    if not db.hasCollection("PgToMongoPipeline"):
+        db.createCollection(name="PgToMongoPipeline")
 

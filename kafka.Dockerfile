@@ -12,5 +12,4 @@ RUN poetry install
 
 COPY ./inarious /app/inarious
 
-#CMD ["poetry", "run", "faust", "-A", "inarious.user_consumer", "worker", "-l", "info"]
-CMD ["poetry", "run", "python", "inarious/user_consumer.py"]
+# CMD ["poetry", "run", "python", "inarious/user_consumer.py"]
